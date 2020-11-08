@@ -12,12 +12,11 @@ namespace Commander.Dtos
 
         [Required]
         public string Instructions { get; set; }
-        // public Instruction Instructions { get; set; }
 
         [Required]
-        public string Platform { get; set; }
+        public int PlatformId { get; set; }
 
-        // [Required]
-        // public int PlatformId { get; set; }
+        [Required]
+        public string PlatformName { get; set; }
     }
 }

@@ -9,6 +9,7 @@ namespace Commander.Dtos
         public int Id { get; set; }
         public string Task { get; set; }
         public string Instructions { get; set; }
-        public string Platform { get; set; }
+        public int PlatformId { get; set; }
+        public string PlatformName { get; set; }
     }
 }

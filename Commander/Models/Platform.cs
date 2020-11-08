@@ -4,8 +4,6 @@ namespace Commander.Models
 {
     public class Platform
     {
-        // PK
-        [Key]
         public int Id { get; set; }
 
         [Required]

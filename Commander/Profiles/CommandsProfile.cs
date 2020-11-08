@@ -7,34 +7,45 @@ namespace Commander.Profiles
 {
     public class CommandsProfile : Profile
     {
+        private readonly IMapper _mapper;
+
+        public CommandsProfile(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
+
         public CommandsProfile()
         {
             // <source, target>
             CreateMap<Command, CommandReturnDto>()
                 .ForMember(dest => dest.Instructions, opt => 
                     opt.MapFrom(src => src.Instructions.Description))
-                .ForMember(dest => dest.Platform, opt =>
+                .ForMember(dest => dest.PlatformId, opt =>
+                    opt.MapFrom(src => src.Platform.Id))
+                .ForMember(dest => dest.PlatformName, opt =>
                     opt.MapFrom(src => src.Platform.Name));
+
+            CreateMap<CommandCreateDto, Platform>()
+                .ForMember(dest => dest.Id, opt =>
+                    opt.MapFrom(src => src.PlatformId))
+                .ForMember(dest => dest.Name, opt =>
+                    opt.MapFrom(src => src.PlatformName));
 
             CreateMap<CommandCreateDto, Command>()
                 .ForMember(dest => dest.Instructions, opt => 
-                    opt.MapFrom(src => new Instruction{ Description=src.Instructions}))
-                .ForMember(dest => dest.Platform, opt =>
-                    opt.MapFrom(src => new Platform{ Name=src.Platform }));
-                    
-            CreateMap<CommandUpdateDto, Command>()
-                .ForMember(dest => dest.Instructions, opt => 
-                    opt.MapFrom(src => new Instruction{Description=src.Instructions}))
-                .ForMember(dest => dest.Platform, opt =>
-                    opt.MapFrom(src => new Platform{ Id=src.PlatformId, Name=src.Platform }));
-
-            CreateMap<Command, CommandUpdateDto>()
-                .ForMember(dest => dest.Instructions, opt => 
-                    opt.MapFrom(src => src.Instructions.Description))
-                .ForMember(dest => dest.Platform, opt =>
-                    opt.MapFrom(src => src.Platform.Name))
+                    opt.MapFrom(src => new Instruction{ Description=src.Instructions }))
+                .ForPath(dest => dest.Platform, opt =>
+                    opt.MapFrom(src => _mapper.Map<CommandCreateDto, Platform>(src))) // try forMember to see if it ALSO works
                 .ForMember(dest => dest.PlatformId, opt =>
                     opt.MapFrom(src => src.PlatformId));
+                    
+            // CreateMap<CommandUpdateDto, Command>()
+            //     .ForMember(dest => dest.Instructions.Description, opt => 
+            //         opt.MapFrom(src => src.Instructions))
+            //     .ForMember(dest => dest.PlatformId, opt =>
+            //         opt.MapFrom(src => src.PlatformId))
+            //     .ForMember(dest => dest.Platform.Name, opt =>
+            //         opt.MapFrom(src => src.PlatformName ));
 
             CreateMap<Platform, PlatformReturnDto>()
                 .ForMember(dest => dest.Name, opt => 
@@ -43,3 +54,5 @@ namespace Commander.Profiles
         }
     }
 }
+
+

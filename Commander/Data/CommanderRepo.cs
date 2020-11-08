@@ -30,6 +30,7 @@ namespace Commander.Data
                     Id = u.Id,
                     Task = u.Task,
                     Platform = u.Platform,
+                    PlatformId = u.PlatformId,
                     Instructions = u.Instructions
                 }) 
                 .ToList();
@@ -44,12 +45,29 @@ namespace Commander.Data
                     Id = u.Id,
                     Task = u.Task,
                     Platform = u.Platform,
+                    PlatformId = u.PlatformId,
                     Instructions = u.Instructions
                 })
                 .ToList()
                 .FirstOrDefault(c => c.Id == id);
 
             return command;
+        }
+
+        public IEnumerable<Command> GetCommandsByPlatform(int id)
+        {
+            var commands = _context.Commands
+                .Select(u => new Command {
+                    Id = u.Id,
+                    Task = u.Task,
+                    Platform = u.Platform,
+                    PlatformId = u.PlatformId,
+                    Instructions = u.Instructions
+                })
+                .Where(p => p.PlatformId == id)
+                .ToList();
+
+            return commands;
         }
 
         public void UpdateCommand(Command cmd)
@@ -70,7 +88,7 @@ namespace Commander.Data
         {
             var platformItems = _context.Platforms
                 .Select(p => new Platform {
-                    // Id = p.Id,
+                    Id = p.Id,
                     Name = p.Name
                 })
                 .Distinct()
@@ -79,11 +97,16 @@ namespace Commander.Data
 
             return platformItems;
         }
+        public Platform GetPlatformById(int id)
+        {
+            var platform = _context.Platforms.FirstOrDefault(c => c.Id == id);
+
+            return platform;
+        }
 
         public bool SaveChanges()
         {
             return (_context.SaveChanges() >= 0);
         }
-
     }
 }

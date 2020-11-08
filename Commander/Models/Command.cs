@@ -12,11 +12,10 @@ namespace Commander.Models
         [Required]
         [MaxLength(200)]
         public string Task { get; set; }
+        public Instruction Instructions { get; set; }
 
         public Platform Platform { get; set; }
         public int PlatformId { get; set; }
         
-        public Instruction Instructions { get; set; }
-
     }
 }

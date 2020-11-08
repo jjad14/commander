@@ -27,12 +27,6 @@ namespace Commander.Data
                 .HasOne(b => b.Platform)
                 .WithMany()
                 .HasForeignKey(p => p.PlatformId);
-
-
-            // modelBuilder.Entity<Platform>()
-            //     // .HasIndex( p => p.Name)
-            //     .HasIndex(p => new { p.Id, p.Name })
-            //     .IsUnique();
         }
 
     }

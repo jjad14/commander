@@ -47,6 +47,17 @@ namespace Commander.Controllers
             return Ok(result);
         }
 
+        // GET api/commands/platform/{id}
+        [HttpGet("platform/{id}")]
+        public ActionResult<CommandReturnDto> GetCommandsByPlatform(int id)
+        {
+            var commandItem = _repo.GetCommandsByPlatform(id);
+
+            var result = _mapper.Map<IEnumerable<CommandReturnDto>>(commandItem);
+
+            return Ok(result);
+        }
+
         // POST api/commands
         [HttpPost]
         public ActionResult<CommandReturnDto> CreateCommand(CommandCreateDto cmd) 
@@ -74,8 +85,8 @@ namespace Commander.Controllers
             // TODO: Fix mapping
             commandFromRepo.Task = cmd.Task;
             commandFromRepo.Instructions.Description = cmd.Instructions;
-            commandFromRepo.Platform.Name = cmd.Platform;
             commandFromRepo.Platform.Id = cmd.PlatformId;
+            commandFromRepo.Platform.Name = cmd.PlatformName;
 
             // _mapper.Map(cmd, commandFromRepo);
 
@@ -86,40 +97,6 @@ namespace Commander.Controllers
             }
 
             return NoContent();
-        }
-
-        // PATCH api/commands/{id}
-        [HttpPatch("{id}")]
-        public ActionResult PatchCommand(int id, JsonPatchDocument<CommandUpdateDto> patchDoc) 
-        {
-            var commandFromRepo = _repo.GetCommandById(id);
-
-            if (commandFromRepo == null) {
-                return NotFound();
-            }
-
-            var commandToPatch = _mapper.Map<CommandUpdateDto>(commandFromRepo);
-            patchDoc.ApplyTo(commandToPatch, ModelState);
-
-            if (!TryValidateModel(commandToPatch)) {
-                return ValidationProblem(ModelState);
-            }
-
-            _mapper.Map(commandToPatch, commandFromRepo);
-
-            _repo.UpdateCommand(commandFromRepo);
-
-            _repo.SaveChanges();
-
-            return NoContent();
-
-            // [
-            //     {
-            //         "op": "replace",
-            //         "path": "/task",
-            //         "value": "Patch Update"
-            //     }
-            // ]
         }
 
         // DELETE api/commands/{id}

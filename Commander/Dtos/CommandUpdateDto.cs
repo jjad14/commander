@@ -14,9 +14,10 @@ namespace Commander.Dtos
         public string Instructions { get; set; }
 
         [Required]
-        public string Platform { get; set; }
+        public int PlatformId { get; set; }
 
         [Required]
-        public int PlatformId { get; set; }
+        public string PlatformName { get; set; }
+
     }
 }
