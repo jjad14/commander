@@ -1,0 +1,61 @@
+.container {
+    width: 50%;
+    margin: 50px auto;
+}
+
+mat-card {
+    border: 1px solid grey;
+}
+
+mat-form-field {
+    width: 100%;
+    margin: 1rem 0 1rem;
+}
+
+mat-spinner {
+    margin: auto;
+}
+
+h2 {
+    text-align: center;
+}
+
+.submit-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.login-btn {
+    align-self: center;
+}
+
+.login-btn > button {
+    align-self: center;
+    width: 200px;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.form-email {
+    align-self: center;
+    width: 80%;
+}
+
+.form-password {
+    align-self: center;
+    width: 80%;
+}
+
+.form-email > mat-form-field{
+    width: 100%;
+}
+
+.form-password > mat-form-field {
+    width: 100%;
+}

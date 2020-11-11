@@ -1,0 +1,61 @@
+mat-card {
+    width: 100%;
+    max-width: 60%;
+    min-width: 600px;
+    margin: 0 auto;
+    border: 1px solid grey;
+}
+
+.container {
+    width: 100%;
+    margin: 0 auto;
+}
+
+mat-form-field {
+    width: 100%;
+    margin: 20px 10px;
+}
+
+mat-spinner {
+    margin: auto;
+}
+
+h2 {
+    text-align: center;
+}
+
+.invalid-feedback {
+    color: red;
+}
+
+.form-group {
+    margin: 0px 5px 0px 5px;
+    width: 100%;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0px 20px 0px 0px;
+}
+
+.form-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+button {
+    margin: 5px 10px;
+}
+
+.invalid-feedback {
+    display: flex;
+}
+
+.invalid-feedback > div {
+    margin: 0px 10px;
+}

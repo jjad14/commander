@@ -1,0 +1,135 @@
+/* Container*/
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* TOP Header */
+.header {
+    display: flex;
+    margin-bottom: 10px;
+    justify-content: flex-end;
+    flex-direction: row;
+}
+
+.create {
+    display: flex;
+    flex-direction: row;
+}
+
+.create > button {
+    margin: 0px 5px;
+}
+
+
+/* Content */
+
+.content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Filtering Container */
+
+h3 {
+    text-align:center;
+}
+
+.filter {
+    order: 1;
+    width: 20%;
+    margin: 10px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.filter > mat-card {
+    border: 1px solid grey;
+    border-radius: 25px;
+}
+
+.example-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.example-full-width {
+    width: 100%;
+}
+
+
+.button-form {
+    align-self: stretch;
+}
+
+.button-form > button {
+    width: 100%;
+}
+
+.filter-list {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+mat-selection-list {
+    margin: 0px 10px 20px 10px;
+}
+
+/* 900: #263238,   900: #01579b,*/
+mat-list-option {
+    text-align: center;
+    border: 0.5px solid grey;
+    border-radius: 25px;
+    margin: 5px 0px;
+    /* background-color: #263238; */
+}
+/* Command Container */
+
+.commands {
+    order: 2;
+    width: 80%;
+    margin: 5px 10px;
+}
+
+mat-expansion-panel {
+    margin: 10px 0px;
+    border: 1px solid grey;
+    width: 100%;
+}
+
+mat-panel-description {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.action-link {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.action-link > div {
+    margin: 0px 10px;
+}
+
+#divider1 {
+    margin-bottom: 20px;
+}
+
+#divider2 {
+    margin-top: 20px;
+}
+
+/* Paginator Container */
+
+.paginator {
+    display: flex;
+    justify-content: center;
+}

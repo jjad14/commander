@@ -1,0 +1,87 @@
+<div class="container">
+  
+    <div class="header">
+      <div class="create">
+        <button mat-raised-button color="accent" [routerLink]="['create']">Create New Command</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="filter">
+        <mat-card>
+          <div class="search-form">
+            <h3>Search for Command</h3>
+            <form class="example-form">
+              <mat-form-field class="example-full-width">
+                <mat-label>Search</mat-label>
+                <input matInput placeholder="Search for Commands" value="" autocomplete="off">
+              </mat-form-field>
+            </form>
+          </div>
+          <div class="button-form">
+            <button mat-raised-button color="accent">Search</button>
+          </div>
+
+          <div class="filter-list">
+            <h3>Filter by Platform</h3>
+            <mat-selection-list [multiple]="false" #list>
+              <mat-list-option [value]="0"  (click)="filterByPlatform(0)">All</mat-list-option>
+              <mat-list-option *ngFor="let platform of platforms" [value]="platform.id" (click)="filterByPlatform(platform.id)" color="accent">
+                <p>{{ platform.name }}</p>
+              </mat-list-option>
+            </mat-selection-list>
+          </div>
+        </mat-card>
+      </div>
+
+      <div class="commands">
+        <div class="cmd">
+          <mat-expansion-panel *ngFor="let command of commands" selected color="accent">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <p><strong>{{ command.task }}</strong></p>
+                </mat-panel-title>
+                <mat-panel-description>
+                  <p><strong>Platform:  </strong> {{ command.platformName }}</p>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <mat-divider id="divider1"></mat-divider>
+
+            <strong>Task:  </strong> {{ command.task }}
+            <br><br> 
+            <strong>Platform:  </strong> {{ command.platformName }}
+            <br><br> 
+            <strong>Instructions:  </strong>
+            <br> 
+            {{ command.instructions }}
+            <br><mat-divider id="divider2"></mat-divider>
+            <div class="action-link">
+              <div>
+                <button mat-raised-button color="warn" 
+                [routerLink]="['edit', command.id]">Edit Post</button>
+              </div>
+              <div>
+                <button mat-raised-button color="warn" 
+                (click)="onDelete(command)">Delete Post</button>
+              </div>
+            </div>
+        </mat-expansion-panel>
+        <ng-container *ngIf="commands.length <= 0">
+            <h3>No Commands are found.</h3>
+        </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="commands.length > 0">
+      <div class="paginator">
+        <mat-paginator 
+            [length]="totalPosts" 
+            [pageSize]="postsPerPage"
+            [pageSizeOptions]="pageSizeOptions"
+            (page)="onChangedPage($event)">
+        </mat-paginator>
+    </div>
+    </ng-container>
+</div>
+

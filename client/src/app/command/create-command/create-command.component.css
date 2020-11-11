@@ -1,0 +1,24 @@
+.container {
+    width: 50%;
+    margin: 30px auto;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 20px;
+}
+
+form {
+    margin: 20px 0px;
+}
+
+.form-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+div > button {
+    margin: 0px 10px;
+}

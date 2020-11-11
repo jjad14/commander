@@ -1,0 +1,29 @@
+<mat-toolbar color="primary">
+        <img src="assets/images/logo1.png" alt="logo" [routerLink]="['/']">
+    <span class="spacer"></span>
+    <ul>
+        <li>
+            <a mat-button
+                [routerLink]="['/']" 
+                routerLinkActive="active" 
+                [routerLinkActiveOptions]="{exact: true}">
+                Home
+            </a>
+        </li>
+        <li>
+            <a mat-button [routerLink]="['/command']" routerLinkActive="mat-accent">View Commands</a>
+        </li>
+        <li>
+            <a mat-button [routerLink]="['/about']" routerLinkActive="mat-accent">About</a>
+        </li>
+        <li>
+            <a mat-button [routerLink]="['/auth/login']" routerLinkActive="mat-accent">Login</a>
+        </li>
+        <li>
+            <a mat-button [routerLink]="['/auth/register']" routerLinkActive="mat-accent">Register</a>
+        </li>
+        <li>
+            <button mat-button>Logout</button>
+        </li>
+    </ul>
+</mat-toolbar>

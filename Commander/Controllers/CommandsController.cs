@@ -18,7 +18,7 @@ namespace Commander.Controllers
         public CommandsController(ICommanderRepo repo, IMapper mapper)
         {
             _mapper = mapper;
-            _repo = repo;
+            _repo = repo; 
         }
 
         // GET api/commands

@@ -1,0 +1,36 @@
+<div class="container">
+    <mat-card>
+        <mat-card-title class="card-header">{{ title }}</mat-card-title>
+        <hr>
+        <form [formGroup]="form" (ngSubmit)="onSubmit(form, formDirective)" #formDirective="ngForm">
+            <div class="form-group">
+                <mat-form-field appearance="outline">
+                    <mat-label>Task</mat-label>
+                    <input type="text" matInput formControlName="task" autocomplete="off"/>
+                    <mat-error *ngIf="form.get('task').invalid">Please enter a task.</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Instructions</mat-label>
+                    <input type="text" matInput formControlName="instructions" autocomplete="off"/>
+                    <mat-error *ngIf="form.get('instructions').invalid">Please enter the instruction.</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Platform</mat-label>
+                  <mat-select formControlName="platform">
+                    <mat-option *ngFor="let platform of platforms" [value]="platform.id">
+                      {{platform.name}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="form.get('platform').invalid">Please select a platform.</mat-error>
+                </mat-form-field>
+            </div>
+            
+            <div class="form-buttons">
+                <div>
+                  <button mat-raised-button color="accent" type="submit">{{ button }}</button>
+                </div>
+              </div>
+        </form>
+    </mat-card>
+</div>
