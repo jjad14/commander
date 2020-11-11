@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Commander.Dtos;
 using Commander.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Commander.Data
 {
@@ -14,33 +16,35 @@ namespace Commander.Data
             _context = context;
         }
 
-        public void CreateCommand(Command cmd)
+        public async void CreateCommand(Command cmd)
         {
             if (cmd == null) {
                 throw new ArgumentNullException(nameof(cmd));
             }
 
-            _context.Commands.Add(cmd);
+            await _context.Commands.AddAsync(cmd);
         }
 
-        public IEnumerable<Command> GetAllCommands()
+        public async Task<IEnumerable<Command>> GetAllCommands(int skip, int take)
         {
-            var commandItems = _context.Commands
+            var commandItems = await _context.Commands
                 .Select(u => new Command {
                     Id = u.Id,
                     Task = u.Task,
                     Platform = u.Platform,
                     PlatformId = u.PlatformId,
                     Instructions = u.Instructions
-                }) 
-                .ToList();
+                })
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
 
             return commandItems;
         }
 
-        public Command GetCommandById(int id)
+        public async Task<IEnumerable<Command>> GetCommandsByPlatform(int skip, int take, int platoformId)
         {
-            var command = _context.Commands
+            var commands = await _context.Commands
                 .Select(u => new Command {
                     Id = u.Id,
                     Task = u.Task,
@@ -48,26 +52,51 @@ namespace Commander.Data
                     PlatformId = u.PlatformId,
                     Instructions = u.Instructions
                 })
-                .ToList()
-                .FirstOrDefault(c => c.Id == id);
+                .Where(p => p.PlatformId == platoformId)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+
+            return commands;
+        }
+
+        public async Task<Command> GetCommandById(int id)
+        {
+            var command = await _context.Commands
+                .Select(u => new Command {
+                    Id = u.Id,
+                    Task = u.Task,
+                    Platform = u.Platform,
+                    PlatformId = u.PlatformId,
+                    Instructions = u.Instructions
+                })
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             return command;
         }
 
-        public IEnumerable<Command> GetCommandsByPlatform(int id)
+        public async Task<IEnumerable<Platform>> GetAllPlatforms()
         {
-            var commands = _context.Commands
-                .Select(u => new Command {
-                    Id = u.Id,
-                    Task = u.Task,
-                    Platform = u.Platform,
-                    PlatformId = u.PlatformId,
-                    Instructions = u.Instructions
+            var platformItems = await _context.Platforms
+                .Select(p => new Platform {
+                    Id = p.Id,
+                    Name = p.Name
                 })
-                .Where(p => p.PlatformId == id)
-                .ToList();
+                .Distinct()
+                .OrderBy(p => p.Name)
+                .ToListAsync();
 
-            return commands;
+            return platformItems;
+        }
+
+        public async Task<int> CountAsync()
+        {
+            return await _context.Commands.CountAsync();
+        }
+
+        public async Task<int> CountAsyncForPlatform(int id)
+        {
+            return await _context.Commands.Where(p => p.PlatformId == id).CountAsync();
         }
 
         public void UpdateCommand(Command cmd)
@@ -84,29 +113,10 @@ namespace Commander.Data
             _context.Commands.Remove(cmd);
         }
 
-        public IEnumerable<Platform> GetAllPlatforms()
+        public async Task<bool> SaveChanges()
         {
-            var platformItems = _context.Platforms
-                .Select(p => new Platform {
-                    Id = p.Id,
-                    Name = p.Name
-                })
-                .Distinct()
-                .OrderBy(p => p.Name)
-                .ToList();
-
-            return platformItems;
-        }
-        public Platform GetPlatformById(int id)
-        {
-            var platform = _context.Platforms.FirstOrDefault(c => c.Id == id);
-
-            return platform;
+            return (await _context.SaveChangesAsync() >= 0);
         }
 
-        public bool SaveChanges()
-        {
-            return (_context.SaveChanges() >= 0);
-        }
     }
 }

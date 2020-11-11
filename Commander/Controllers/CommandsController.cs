@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Commander.Data;
 using Commander.Dtos;
 using Commander.Models;
-using Microsoft.AspNetCore.JsonPatch;
+using Commander.helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Commander.Controllers
@@ -22,20 +23,36 @@ namespace Commander.Controllers
 
         // GET api/commands
         [HttpGet]
-        public ActionResult<IEnumerable<CommandReturnDto>> GetAllCommands()
-        {
-            var commandItems = _repo.GetAllCommands();
+        public async Task<ActionResult<Pagination<IEnumerable<CommandReturnDto>>>> GetAllCommands([FromQuery] CommandParams commandParams)
+        {  
+            IEnumerable<Command> commandItems = new List<Command>();
+            int totalItems = 0;
 
-            var commandMaps = _mapper.Map<IEnumerable<CommandReturnDto>>(commandItems);
+            // TODO: Specification pattern
+            if (commandParams.PlatformId.HasValue) {
+                commandItems = await _repo.GetCommandsByPlatform(
+                    (commandParams.PageSize * (commandParams.PageIndex - 1)), 
+                    commandParams.PageSize, 
+                    commandParams.PlatformId.GetValueOrDefault());
+                totalItems = await _repo.CountAsyncForPlatform(commandParams.PlatformId.GetValueOrDefault());
+            }
+            else {
+                commandItems = await _repo.GetAllCommands(
+                    (commandParams.PageSize * (commandParams.PageIndex - 1)), 
+                    commandParams.PageSize);
+                totalItems = await _repo.CountAsync();
+            }
 
-            return Ok(commandMaps);
+            var data = _mapper.Map<IEnumerable<CommandReturnDto>>(commandItems);
+
+            return Ok(new Pagination<CommandReturnDto>(commandParams.PageIndex, commandParams.PageSize, totalItems, data));
         }
 
         // GET api/commands/{id}
         [HttpGet("{id}", Name="GetCommandById")]
-        public ActionResult<CommandReturnDto> GetCommandById(int id)
+        public async Task<ActionResult<CommandReturnDto>> GetCommandById(int id)
         {
-            var commandItem = _repo.GetCommandById(id);
+            var commandItem = await _repo.GetCommandById(id);
 
             if (commandItem == null)
             {
@@ -47,25 +64,14 @@ namespace Commander.Controllers
             return Ok(result);
         }
 
-        // GET api/commands/platform/{id}
-        [HttpGet("platform/{id}")]
-        public ActionResult<CommandReturnDto> GetCommandsByPlatform(int id)
-        {
-            var commandItem = _repo.GetCommandsByPlatform(id);
-
-            var result = _mapper.Map<IEnumerable<CommandReturnDto>>(commandItem);
-
-            return Ok(result);
-        }
-
         // POST api/commands
         [HttpPost]
-        public ActionResult<CommandReturnDto> CreateCommand(CommandCreateDto cmd) 
+        public async Task<ActionResult<CommandReturnDto>> CreateCommand(CommandCreateDto cmd) 
         {
             var command = _mapper.Map<Command>(cmd);
 
             _repo.CreateCommand(command);
-            _repo.SaveChanges();
+            await _repo.SaveChanges();
 
             var result = _mapper.Map<CommandReturnDto>(command);
 
@@ -74,9 +80,9 @@ namespace Commander.Controllers
 
         // PUT api/commands/{id}
         [HttpPut("{id}")]
-        public ActionResult UpdateCommand(int id, CommandUpdateDto cmd) 
+        public async Task<ActionResult> UpdateCommand(int id, CommandUpdateDto cmd) 
         {
-            var commandFromRepo = _repo.GetCommandById(id);
+            var commandFromRepo = await _repo.GetCommandById(id);
 
             if (commandFromRepo == null) {
                 return NotFound();
@@ -92,7 +98,7 @@ namespace Commander.Controllers
 
             _repo.UpdateCommand(commandFromRepo);
 
-            if (!_repo.SaveChanges()) {
+            if (!await _repo.SaveChanges()) {
                 return BadRequest();
             }
 
@@ -101,25 +107,25 @@ namespace Commander.Controllers
 
         // DELETE api/commands/{id}
         [HttpDelete("{id}")]
-        public ActionResult DeleteCommand(int id)
+        public async Task<ActionResult> DeleteCommand(int id)
         {
-            var commandFromRepo = _repo.GetCommandById(id);
+            var commandFromRepo = await _repo.GetCommandById(id);
 
             if (commandFromRepo == null) {
                 return NotFound();
             }
 
             _repo.DeleteCommand(commandFromRepo);
-            _repo.SaveChanges();
+            await _repo.SaveChanges();
 
             return NoContent();
         }
 
         // GET: api/commands/platforms
         [HttpGet("platforms")]
-        public ActionResult<IEnumerable<PlatformReturnDto>> GetAllPlatforms() 
+        public async Task<ActionResult<IEnumerable<PlatformReturnDto>>> GetAllPlatforms() 
         {
-            var platformItems = _repo.GetAllPlatforms();
+            var platformItems = await _repo.GetAllPlatforms();
 
             var platformMaps = _mapper.Map<IEnumerable<PlatformReturnDto>>(platformItems);
 
