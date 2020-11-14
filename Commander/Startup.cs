@@ -1,18 +1,16 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Commander.Data;
+using Commander.Errors;
+using Commander.Extensions;
+using Commander.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 
 namespace Commander
@@ -29,42 +27,61 @@ namespace Commander
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<ICommanderRepo, CommanderRepo>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            // Database
             services.AddDbContext<CommanderContext>(opt => opt.UseMySql
                 (Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddControllers().AddNewtonsoftJson(s => {
+            services.AddControllers().AddNewtonsoftJson(s => 
+            {
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
 
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            
-            services.AddScoped<ICommanderRepo, CommanderRepo>();
+            // For validation errors
+            services.Configure<ApiBehaviorOptions>(options => 
+            {
+                // action state allows us to access model state errors
+                options.InvalidModelStateResponseFactory = actionContext => 
+                {
+                    var errors = actionContext.ModelState
+                        .Where(e => e.Value.Errors.Count > 0)
+                        .SelectMany(x => x.Value.Errors)
+                        .Select(x => x.ErrorMessage)
+                        .ToArray();
+                    
+                    var errorResponse = new ApiValidationErrorResponse
+                    {
+                        Errors = errors
+                    };
 
-            // services.AddCors(opt => 
-            // {
-            //     opt.AddPolicy("CorsPolicy", policy => 
-            //     {
-            //         policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
-            //     });
-            // });
+                    return new BadRequestObjectResult(errorResponse);
+                };
+            });
+
+            // swagger config
+            services.AddSwaggerDocumentation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            // Catch any Exceptions that enter the request pipeline
+            app.UseMiddleware<ExceptionMiddleware>();
+
+            // middleware that uses error controller
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             // app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            // app.UseCors("CorsPolicy");
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseAuthorization();
+
+            app.UseSwaggerDocumentation();
 
             app.UseEndpoints(endpoints =>
             {

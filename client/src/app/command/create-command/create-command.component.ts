@@ -18,14 +18,13 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 @Component({
   selector: 'app-create-command',
   templateUrl: './create-command.component.html',
-  styleUrls: ['./create-command.component.css']
+  styleUrls: ['./create-command.component.scss']
 })
 export class CreateCommandComponent implements OnInit {
   enteredTask = '';
   enteredInstructions = '';
   title = '';
   button = '';
-  isLoading = false;
   submitted = false;
 
   private mode = 'create';
@@ -37,7 +36,9 @@ export class CreateCommandComponent implements OnInit {
   platforms: IPlatform[] = [];
   matcher = new MyErrorStateMatcher();
 
-  constructor(private commandService: CommandService, private fb: FormBuilder, public route: ActivatedRoute) { }
+  constructor(private commandService: CommandService,
+              private fb: FormBuilder,
+              public route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.createCommandForm();
@@ -54,7 +55,6 @@ export class CreateCommandComponent implements OnInit {
               this.title = 'Edit Command';
               this.button = 'Edit';
               this.commandId = paramMap.get('commandId');
-              // this.isLoading = true;
 
               // get command by the command id
               this.commandService.getCommandById(+this.commandId)
@@ -99,7 +99,6 @@ export class CreateCommandComponent implements OnInit {
     if (this.form.invalid) {
         return;
     }
-    // this.isLoading = true;
 
     if (this.mode === 'create') {
       const data = {
@@ -114,7 +113,6 @@ export class CreateCommandComponent implements OnInit {
       formDirective.resetForm();
       this.form.reset();
 
-      // Toaster success
     } else {
       const data = {
         task: this.form.value.task,
@@ -126,7 +124,6 @@ export class CreateCommandComponent implements OnInit {
       console.log(data);
 
       this.commandService.updateCommand(+this.commandId, data);
-      // Toaster success
     }
   }
 
@@ -136,7 +133,6 @@ export class CreateCommandComponent implements OnInit {
         this.platforms = res;
       }, error => {
         console.log(error);
-        // Toaster error
       });
   }
 

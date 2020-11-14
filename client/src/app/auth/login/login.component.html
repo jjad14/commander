@@ -1,9 +1,8 @@
 <div class="container">
     <mat-card>
-        <mat-spinner *ngIf="isLoading"></mat-spinner>
         <mat-card-title class="card-header">Login</mat-card-title>
         <hr>
-        <form (submit)="onLogin(loginForm)" *ngIf="!isLoading" #loginForm="ngForm">
+        <form (submit)="onLogin(loginForm)" #loginForm="ngForm">
             <div class="form-container">
                 <div class="form-email">
                     <mat-form-field appearance="outline">
@@ -37,8 +36,7 @@
                 <div class="login-btn">
                     <button id="submit-button" 
                     mat-raised-button color="accent" 
-                    type="submit"
-                    *ngIf="!isLoading">Login</button>
+                    type="submit">Login</button>
                 </div>
             </div>
         </form>

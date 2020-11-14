@@ -7,10 +7,9 @@ import { AuthService } from '../auth.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  isLoading = false;
   private authStatuSub: Subscription;
 
   constructor(public authService: AuthService) {}
@@ -27,7 +26,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       // if (form.invalid) {
       //     return;
       // }
-      // this.isLoading = true;
       // this.authService.loginUser(form.value.email, form.value.password);
   }
 

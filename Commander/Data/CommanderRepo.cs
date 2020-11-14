@@ -15,7 +15,6 @@ namespace Commander.Data
         {
             _context = context;
         }
-
         public async void CreateCommand(Command cmd)
         {
             if (cmd == null) {
@@ -42,7 +41,7 @@ namespace Commander.Data
             return commandItems;
         }
 
-        public async Task<IEnumerable<Command>> GetCommandsByPlatform(int skip, int take, int platoformId)
+        public async Task<IEnumerable<Command>> GetCommandsByPlatform(int skip, int take, int platformId)
         {
             var commands = await _context.Commands
                 .Select(u => new Command {
@@ -52,7 +51,7 @@ namespace Commander.Data
                     PlatformId = u.PlatformId,
                     Instructions = u.Instructions
                 })
-                .Where(p => p.PlatformId == platoformId)
+                .Where(p => p.PlatformId == platformId)
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();

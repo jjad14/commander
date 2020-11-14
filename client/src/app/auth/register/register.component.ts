@@ -8,20 +8,17 @@ import { MustMatch } from '../../shared/helpers/must-match.validator';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
 
-  isLoading = false;
   submitted = false;
 
   constructor(public authService: AuthService, private fb: FormBuilder) {}
 
   ngOnInit() {
-
     this.createRegisterForm();
-
   }
 
   createRegisterForm() {
@@ -47,7 +44,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (this.registerForm.invalid) {
         return;
     }
-      // this.isLoading = true;
       // this.authService.createUser(
       //     this.form.value.username,
       //     this.form.value.email,

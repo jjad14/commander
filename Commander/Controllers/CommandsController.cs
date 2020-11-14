@@ -5,7 +5,9 @@ using Commander.Data;
 using Commander.Dtos;
 using Commander.Models;
 using Commander.helpers;
+using Commander.Errors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Commander.Controllers
 {
@@ -49,14 +51,15 @@ namespace Commander.Controllers
         }
 
         // GET api/commands/{id}
-        [HttpGet("{id}", Name="GetCommandById")]
+        [HttpGet("{id}", Name="GetCommandById")] 
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<CommandReturnDto>> GetCommandById(int id)
         {
             var commandItem = await _repo.GetCommandById(id);
 
             if (commandItem == null)
             {
-                return NotFound();
+                return NotFound(new ApiResponse(404));
             }
 
             var result = _mapper.Map<CommandReturnDto>(commandItem);
@@ -66,12 +69,16 @@ namespace Commander.Controllers
 
         // POST api/commands
         [HttpPost]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status409Conflict)]
         public async Task<ActionResult<CommandReturnDto>> CreateCommand(CommandCreateDto cmd) 
         {
             var command = _mapper.Map<Command>(cmd);
 
             _repo.CreateCommand(command);
-            await _repo.SaveChanges();
+            
+            if (!await _repo.SaveChanges()) {
+                return BadRequest(new ApiResponse(409));
+            }
 
             var result = _mapper.Map<CommandReturnDto>(command);
 
@@ -80,12 +87,14 @@ namespace Commander.Controllers
 
         // PUT api/commands/{id}
         [HttpPut("{id}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status409Conflict)]
         public async Task<ActionResult> UpdateCommand(int id, CommandUpdateDto cmd) 
         {
             var commandFromRepo = await _repo.GetCommandById(id);
 
             if (commandFromRepo == null) {
-                return NotFound();
+                return NotFound(new ApiResponse(404));
             }
 
             // TODO: Fix mapping
@@ -99,7 +108,7 @@ namespace Commander.Controllers
             _repo.UpdateCommand(commandFromRepo);
 
             if (!await _repo.SaveChanges()) {
-                return BadRequest();
+                return BadRequest(new ApiResponse(409, "Resource could not be updated."));
             }
 
             return NoContent();
@@ -107,16 +116,21 @@ namespace Commander.Controllers
 
         // DELETE api/commands/{id}
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status409Conflict)]
         public async Task<ActionResult> DeleteCommand(int id)
         {
             var commandFromRepo = await _repo.GetCommandById(id);
 
             if (commandFromRepo == null) {
-                return NotFound();
+                return NotFound(new ApiResponse(404, "Resource not found."));
             }
 
             _repo.DeleteCommand(commandFromRepo);
-            await _repo.SaveChanges();
+
+            if (!await _repo.SaveChanges()) {
+                return BadRequest(new ApiResponse(409, "Resource could not be deleted."));
+            }
 
             return NoContent();
         }

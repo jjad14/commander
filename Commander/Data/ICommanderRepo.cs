@@ -4,6 +4,8 @@ using Commander.Models;
 
 namespace Commander.Data
 {
+
+    // Change IEnumerable to ICollection?
     public interface ICommanderRepo
     {
         Task<IEnumerable<Command>> GetAllCommands(int skip, int take);
@@ -20,7 +22,9 @@ namespace Commander.Data
         Task<IEnumerable<Platform>> GetAllPlatforms();
 
         Task<bool> SaveChanges();
-
-
     }
 }
+
+// If there are to be future queries and the DB should do the work return IQueryable.
+// If there are to be future queries and it is to be done in memory return IEnumerable.
+// If there are to be no further queries and all the data will need to be read return an IList, ICollection etc.

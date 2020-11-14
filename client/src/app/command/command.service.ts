@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 import { environment } from '../../environments/environment';
 import { ICommand } from '../shared/models/command';
@@ -23,7 +24,7 @@ export class CommandService {
 
   platforms: IPlatform[] = [];
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastr: ToastrService) { }
 
 
   getCommands() {
@@ -77,6 +78,7 @@ export class CommandService {
     this.http.post(this.apiUrl + 'commands', command)
       .subscribe(res => {
         console.log(res);
+        this.toastr.success('Command Created');
       });
   }
 
@@ -84,6 +86,7 @@ export class CommandService {
     this.http.put(this.apiUrl + 'commands/' + id, command)
       .subscribe(res => {
         console.log(res);
+        this.toastr.success('Command Updated');
       });
   }
 

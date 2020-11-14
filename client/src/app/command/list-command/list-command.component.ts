@@ -11,7 +11,7 @@ import { PageEvent } from '@angular/material/paginator';
 @Component({
   selector: 'app-list-command',
   templateUrl: './list-command.component.html',
-  styleUrls: ['./list-command.component.css']
+  styleUrls: ['./list-command.component.scss']
 })
 export class ListCommandComponent implements OnInit, OnDestroy {
   commands: ICommand[] = [];
@@ -37,7 +37,6 @@ export class ListCommandComponent implements OnInit, OnDestroy {
     this.commandsSubscription = this.commandService
       .getCommandUpdate()
       .subscribe((commandData: {commands: ICommand[], count: number, pageSize: number, pageNumber: number}) => {
-              // this.isLoading = false;
               this.commands = commandData.commands;
               this.totalPosts = commandData.count;
               this.postsPerPage = commandData.pageSize;
