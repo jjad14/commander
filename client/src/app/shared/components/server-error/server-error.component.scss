@@ -1,0 +1,26 @@
+// mx-5 text-center
+.container {
+    margin: 5px 0px;
+    text-align: center;
+}
+
+.error-message {
+    color: red;
+}
+
+.warning {
+    font-weight: bold;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.stack-trace {
+    text-align: left;
+}
+
+code {
+    margin: 5px 0px;
+    background-color: whitesmoke;
+}

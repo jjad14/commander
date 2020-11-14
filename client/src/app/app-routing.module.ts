@@ -5,6 +5,7 @@ import { ListCommandComponent } from './command/list-command/list-command.compon
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 import { AboutComponent } from './shared/components/about/about.component';
 import { HomeComponent } from './home/home.component';
+import { ServerErrorComponent } from './shared/components/server-error/server-error.component';
 
 
 const routes: Routes = [
@@ -20,6 +21,9 @@ const routes: Routes = [
   },
   {path: 'not-found',
     component: NotFoundComponent
+  },
+  {path: 'server-error',
+    component: ServerErrorComponent
   },
   {path: '**', redirectTo: 'not-found', pathMatch: 'full', },
 ];

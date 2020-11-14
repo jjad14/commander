@@ -21,10 +21,11 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { AboutComponent } from './components/about/about.component';
 import { DeleteCommandComponent } from './modals/delete-command/delete-command.component';
+import { ServerErrorComponent } from './components/server-error/server-error.component';
 
 
 @NgModule({
-  declarations: [FooterComponent, NavBarComponent, NotFoundComponent, AboutComponent, DeleteCommandComponent],
+  declarations: [FooterComponent, NavBarComponent, NotFoundComponent, AboutComponent, DeleteCommandComponent, ServerErrorComponent],
   imports: [
     CommonModule,
     MatInputModule,
